@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from './supabaseclient.js'
+import { downloadPickupNotificationPDF } from './utils/pdfGenerator'
 
 export default function TrackOrder() {
   const [trackingInput, setTrackingInput] = useState('')
@@ -73,6 +74,45 @@ export default function TrackOrder() {
 
         {selectedOrder && (
           <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-6">
+            {selectedOrder.status === 'Available for Pickup' && (
+              <div className="mb-6 rounded-lg border-l-4 border-blue-500 bg-blue-900/30 p-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">📍</span>
+                  <div className="flex-1">
+                    <p className="font-bold text-blue-300">Ready for Pickup</p>
+                    <p className="text-sm text-blue-200 mt-2">
+                      Your parcel is ready for pickup! Please contact us or visit our delivery office.
+                    </p>
+                    <div className="mt-3 rounded bg-blue-950/50 p-3">
+                      <p className="text-sm font-semibold text-blue-200">📞 Call us at: <span className="font-bold text-blue-100">+1 (800) 123-4567</span></p>
+                      <p className="text-xs text-blue-300 mt-1">Office Hours: Mon-Fri 9AM-6PM, Sat 10AM-4PM</p>
+                    </div>
+                    <button
+                      onClick={() => downloadPickupNotificationPDF(selectedOrder)}
+                      className="mt-3 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 transition"
+                    >
+                      📄 Download Pickup Notice
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            {selectedOrder.status === 'Parcel Received' && selectedOrder.received_at && (
+              <div className="mb-6 rounded-lg border-l-4 border-green-500 bg-green-900/30 p-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">✅</span>
+                  <div>
+                    <p className="font-bold text-green-300">Parcel Received</p>
+                    <p className="text-sm text-green-200">
+                      Date: {new Date(selectedOrder.received_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    </p>
+                    <p className="text-sm text-green-200">
+                      Time: {new Date(selectedOrder.received_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-white">{selectedOrder.tracking_number}</h2>
               <span className="rounded-full bg-sky-900/80 px-3 py-1 text-sm font-semibold text-sky-300">{selectedOrder.status}</span>

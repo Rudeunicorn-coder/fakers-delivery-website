@@ -1,3 +1,5 @@
+import { motion } from 'framer-motion';
+
 const services = [
   { title: 'Same-Day Delivery', description: 'Fast dispatch for urgent parcels, contracts, and time-sensitive documentation across major urban zones.' },
   { title: 'Scheduled Routes', description: 'Reliable delivery planning for recurring business orders, retail replenishment, and recurring route schedules.' },
@@ -17,11 +19,18 @@ export default function Services() {
         <img src="/images/hero-2.webp" alt="Professional delivery team managing logistics operations" className="w-full h-auto object-cover" loading="lazy" />
       </div>
       <div className="card-grid">
-        {services.map((service) => (
-          <div key={service.title} className="info-card">
+        {services.map((service, index) => (
+          <motion.div
+            key={service.title}
+            className="info-card"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: index * 0.1 }}
+            whileHover={{ scale: 1.02 }}
+          >
             <h3>{service.title}</h3>
             <p>{service.description}</p>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>
